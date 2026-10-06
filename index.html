@@ -71,4 +71,64 @@
 
   <div class="card">
 
-    <div
+    <div class="symbol">XAU/USD — الذهب مقابل الدولار</div>
+
+    <div class="price" id="price">--</div>
+
+    <button onclick="getGoldPrice()">
+      جلب سعر الذهب
+    </button>
+
+    <div id="status">
+      اضغط على الزر لجلب السعر الحقيقي.
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+
+async function getGoldPrice() {
+
+  const priceElement = document.getElementById("price");
+  const statusElement = document.getElementById("status");
+
+  priceElement.innerText = "--";
+  statusElement.innerText = "جاري جلب سعر الذهب الحقيقي...";
+
+  try {
+
+    const response = await fetch("https://api.gold-api.com/price/XAU");
+
+    if (!response.ok) {
+      throw new Error("API Error");
+    }
+
+    const data = await response.json();
+
+    if (!data.price) {
+      throw new Error("No price");
+    }
+
+    priceElement.innerText =
+      "$" + Number(data.price).toFixed(2);
+
+    statusElement.innerText =
+      "تم جلب سعر الذهب بنجاح ✅";
+
+  } catch (error) {
+
+    priceElement.innerText = "--";
+
+    statusElement.innerText =
+      "تعذر جلب سعر الذهب حاليًا. لم يتم اختلاق أي سعر ❌";
+
+  }
+
+}
+
+</script>
+
+</body>
+</html>
