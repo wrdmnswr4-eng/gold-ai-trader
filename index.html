@@ -1,1 +1,73 @@
+<!DOCTYPE html><html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>متداول الذهب بالذكاء الاصطناعي</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111827;
+      color: white;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 700px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+      color: #f5c542;
+    }
+    .card {
+      background: #1f2937;
+      padding: 20px;
+      border-radius: 15px;
+      margin-top: 20px;
+    }
+    .price {
+      font-size: 40px;
+      text-align: center;
+      color: #f5c542;
+      font-weight: bold;
+    }
+    button {
+      width: 100%;
+      padding: 15px;
+      border: 0;
+      border-radius: 10px;
+      background: #f5c542;
+      color: #111827;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .status {
+      text-align: center;
+      margin-top: 15px;
+      color: #9ca3af;
+    }
+  </style>
+</head><body>
+  <div class="container">
+    <h1>📈 متداول الذهب بالذكاء الاصطناعي</h1><div class="card">
+  <h2>XAUUSD - الذهب</h2>
 
+  <div class="price">--</div>
+
+  <button onclick="analyzeGold()">
+    تحليل الذهب
+  </button>
+
+  <div class="status" id="status">
+    اضغط على تحليل الذهب للبدء
+  </div>
+</div>
+
+  </div>  <script>
+    function analyzeGold() {
+      document.getElementById("status").innerText =
+        "جاري تجهيز التحليل...";
+    }
+  </script></body>
+</html>
