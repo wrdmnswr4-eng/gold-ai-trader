@@ -44,6 +44,12 @@
       margin: 25px 0;
     }
 
+    .direction {
+      font-size: 28px;
+      font-weight: bold;
+      margin: 20px 0;
+    }
+
     button {
       width: 100%;
       padding: 16px;
@@ -59,6 +65,7 @@
     #status {
       margin-top: 20px;
       line-height: 1.8;
+      color: #d1d5db;
     }
   </style>
 </head>
@@ -75,12 +82,16 @@
 
     <div class="price" id="price">--</div>
 
-    <button onclick="getGoldPrice()">
-      جلب سعر الذهب
+    <div class="direction" id="direction">
+      اتجاه السوق: --
+    </div>
+
+    <button onclick="analyzeGold()">
+      🔍 تحليل اتجاه الذهب
     </button>
 
     <div id="status">
-      اضغط على الزر لجلب السعر الحقيقي.
+      اضغط على الزر لبدء التحليل.
     </div>
 
   </div>
@@ -89,41 +100,95 @@
 
 <script>
 
-async function getGoldPrice() {
+async function analyzeGold() {
 
   const priceElement = document.getElementById("price");
+  const directionElement = document.getElementById("direction");
   const statusElement = document.getElementById("status");
 
   priceElement.innerText = "--";
-  statusElement.innerText = "جاري جلب سعر الذهب الحقيقي...";
+  directionElement.innerText = "جاري التحليل...";
+  statusElement.innerText = "جاري جلب بيانات الذهب الحقيقية...";
 
   try {
 
-    const response = await fetch("https://api.gold-api.com/price/XAU");
+    // السعر الحالي
+    const priceResponse =
+      await fetch("https://api.gold-api.com/price/XAU");
 
-    if (!response.ok) {
-      throw new Error("API Error");
+    if (!priceResponse.ok) {
+      throw new Error("Price API Error");
     }
 
-    const data = await response.json();
+    const priceData = await priceResponse.json();
 
-    if (!data.price) {
-      throw new Error("No price");
+    if (!priceData.price) {
+      throw new Error("No current price");
     }
+
+    const currentPrice = Number(priceData.price);
 
     priceElement.innerText =
-      "$" + Number(data.price).toFixed(2);
+      "$" + currentPrice.toFixed(2);
+
+    // البيانات التاريخية
+    const historyResponse =
+      await fetch("https://xaus.com/api/v1/history");
+
+    if (!historyResponse.ok) {
+      throw new Error("History API Error");
+    }
+
+    const historyData = await historyResponse.json();
+
+    if (!historyData.points || historyData.points.length < 2) {
+      throw new Error("Not enough history");
+    }
+
+    const points = historyData.points;
+
+    const lastPoint = points[points.length - 1];
+    const previousPoint = points[points.length - 2];
+
+    const lastClose = Number(lastPoint.c);
+    const previousClose = Number(previousPoint.c);
+
+    if (lastClose > previousClose) {
+
+      directionElement.innerText =
+        "📈 اتجاه السوق: صاعد";
+
+      directionElement.style.color = "#22c55e";
+
+    } else if (lastClose < previousClose) {
+
+      directionElement.innerText =
+        "📉 اتجاه السوق: هابط";
+
+      directionElement.style.color = "#ef4444";
+
+    } else {
+
+      directionElement.innerText =
+        "🟡 اتجاه السوق: محايد";
+
+      directionElement.style.color = "#f5c542";
+    }
 
     statusElement.innerText =
-      "تم جلب سعر الذهب بنجاح ✅";
+      "تم التحليل اعتمادًا على بيانات الذهب الحقيقية ✅";
 
   } catch (error) {
 
     priceElement.innerText = "--";
 
-    statusElement.innerText =
-      "تعذر جلب سعر الذهب حاليًا. لم يتم اختلاق أي سعر ❌";
+    directionElement.innerText =
+      "اتجاه السوق: غير متاح";
 
+    directionElement.style.color = "#f5c542";
+
+    statusElement.innerText =
+      "تعذر جلب البيانات حاليًا. لم يتم اختلاق أي سعر أو اتجاه ❌";
   }
 
 }
