@@ -38,112 +38,15 @@ h1 {
 }
 
 .direction {
-  font-size: 28px;
+  font-size: 26px;
   margin-top: 20px;
 }
 
-button {
-  margin-top: 25px;
-  padding: 15px 30px;
-  border: 0;
-  border-radius: 10px;
-  background: #f5c542;
-  font-size: 18px;
-  font-weight: bold;
-}
-</style>
-</head>
-
-<body>
-
-<div class="container">
-
-<h1>📈 متداول الذهب بالذكاء الاصطناعي</h1>
-
-<div class="card">
-
-<p>سعر الذهب XAU/USD</p>
-
-<div class="price" id="price">
-جاري التحميل...
-</div>
-
-<div class="direction" id="direction">
-⏳ جاري التحليل...
-</div>
-
-<p id="status"></p>
-
-<button onclick="loadGold()">
-🔄 تحديث
-</button>
-
-</div>
-
-</div>
-
-<script>
-
-async function loadGold() {
-
-  const priceElement =
-    document.getElementById("price");
-
-  const directionElement =
-    document.getElementById("direction");
-
-  const statusElement =
-    document.getElementById("status");
-
-  try {
-
-    statusElement.textContent =
-      "جاري جلب البيانات الحقيقية...";
-
-    const response =
-      await fetch("https://api.gold-api.com/price/XAU");
-
-    if (!response.ok) {
-      throw new Error("فشل الاتصال بمصدر الذهب");
-    }
-
-    const data =
-      await response.json();
-
-    const price =
-      Number(data.price);
-
-    if (!price) {
-      throw new Error("السعر غير موجود");
-    }
-
-    priceElement.textContent =
-      "$" + price.toFixed(2);
-
-    directionElement.textContent =
-      "📊 تم جلب السعر بنجاح";
-
-    statusElement.textContent =
-      "✅ بيانات حقيقية";
-
-  } catch (error) {
-
-    priceElement.textContent =
-      "---";
-
-    directionElement.textContent =
-      "❌ تعذر جلب البيانات";
-
-    statusElement.textContent =
-      error.message;
-
-  }
-
+.analysis {
+  background: #111b2b;
+  padding: 18px;
+  margin-top: 20px;
+  border-radius: 12px;
 }
 
-loadGold();
-
-</script>
-
-</body>
-</html>
+.analysis h2
