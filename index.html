@@ -3,53 +3,85 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>متداول الذهب</title>
+<title>متداول الذهب بالذكاء الاصطناعي</title>
 
 <style>
-body {
-  margin: 0;
-  font-family: Arial;
-  background: #101827;
-  color: white;
-  text-align: center;
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#101827;
+  color:white;
+  text-align:center;
 }
-
-.container {
-  max-width: 700px;
-  margin: auto;
-  padding: 30px 15px;
+.container{
+  max-width:800px;
+  margin:auto;
+  padding:20px 15px;
 }
-
-h1 {
-  color: #f5c542;
+h1{color:#f5c542}
+.card{
+  background:#1b2638;
+  padding:20px;
+  margin-top:15px;
+  border-radius:15px;
 }
-
-.card {
-  background: #1b2638;
-  padding: 25px;
-  margin-top: 20px;
-  border-radius: 15px;
+.price{
+  font-size:42px;
+  color:#f5c542;
+  font-weight:bold;
 }
-
-.price {
-  font-size: 42px;
-  color: #f5c542;
-  font-weight: bold;
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-top:15px;
 }
-
-.direction {
-  font-size: 28px;
-  margin-top: 20px;
+.box{
+  background:#162235;
+  padding:18px 10px;
+  border-radius:12px;
 }
-
-button {
-  margin-top: 25px;
-  padding: 15px 30px;
-  border: 0;
-  border-radius: 10px;
-  background: #f5c542;
-  font-size: 18px;
-  font-weight: bold;
+.label{
+  color:#aeb9ca;
+  font-size:14px;
+}
+.value{
+  font-size:21px;
+  font-weight:bold;
+  margin-top:8px;
+}
+.signal{
+  font-size:30px;
+  font-weight:bold;
+  margin-top:10px;
+}
+.buy{color:#35d07f}
+.sell{color:#ff5964}
+.wait{color:#f5c542}
+button{
+  margin-top:20px;
+  padding:15px 30px;
+  border:0;
+  border-radius:10px;
+  background:#f5c542;
+  font-size:18px;
+  font-weight:bold;
+}
+.warning{
+  margin-top:15px;
+  padding:15px;
+  background:#3b3015;
+  border-radius:10px;
+  color:#ffd86b;
+  line-height:1.7;
+}
+#error{
+  color:#ff5964;
+  margin-top:15px;
+}
+@media(max-width:600px){
+  .grid{grid-template-columns:1fr}
+  .price{font-size:36px}
 }
 </style>
 </head>
@@ -64,86 +96,37 @@ button {
 
 <p>سعر الذهب XAU/USD</p>
 
-<div class="price" id="price">
-جاري التحميل...
-</div>
+<div class="price" id="price">جاري التحميل...</div>
 
-<div class="direction" id="direction">
-⏳ جاري التحليل...
-</div>
-
-<p id="status"></p>
-
-<button onclick="loadGold()">
-🔄 تحديث
-</button>
+<div id="status">⏳ جاري جلب البيانات...</div>
 
 </div>
 
+
+<div class="card">
+
+<h2>📊 تحليل السوق</h2>
+
+<div class="grid">
+
+<div class="box">
+<div class="label">الاتجاه</div>
+<div class="value" id="direction">---</div>
 </div>
 
-<script>
+<div class="box">
+<div class="label">قوة الإشارة</div>
+<div class="value" id="strength">---</div>
+</div>
 
-async function loadGold() {
+<div class="box">
+<div class="label">RSI</div>
+<div class="value" id="rsi">---</div>
+</div>
 
-  const priceElement =
-    document.getElementById("price");
+<div class="box">
+<div class="label">SMA 20</div>
+<div class="value" id="sma20">---</div>
+</div>
 
-  const directionElement =
-    document.getElementById("direction");
-
-  const statusElement =
-    document.getElementById("status");
-
-  try {
-
-    statusElement.textContent =
-      "جاري جلب البيانات الحقيقية...";
-
-    const response =
-      await fetch("https://api.gold-api.com/price/XAU");
-
-    if (!response.ok) {
-      throw new Error("فشل الاتصال بمصدر الذهب");
-    }
-
-    const data =
-      await response.json();
-
-    const price =
-      Number(data.price);
-
-    if (!price) {
-      throw new Error("السعر غير موجود");
-    }
-
-    priceElement.textContent =
-      "$" + price.toFixed(2);
-
-    directionElement.textContent =
-      "📊 تم جلب السعر بنجاح";
-
-    statusElement.textContent =
-      "✅ بيانات حقيقية";
-
-  } catch (error) {
-
-    priceElement.textContent =
-      "---";
-
-    directionElement.textContent =
-      "❌ تعذر جلب البيانات";
-
-    statusElement.textContent =
-      error.message;
-
-  }
-
-}
-
-loadGold();
-
-</script>
-
-</body>
-</html>
+<div
