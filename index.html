@@ -6,66 +6,160 @@
   <title>متداول الذهب بالذكاء الاصطناعي</title>
 
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: #111827;
+      background: #0f172a;
       color: white;
     }
 
     .container {
-      max-width: 700px;
+      max-width: 850px;
       margin: auto;
-      padding: 25px;
+      padding: 20px;
     }
 
     h1 {
       text-align: center;
       color: #f5c542;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #94a3b8;
+      margin-bottom: 25px;
     }
 
     .card {
-      background: #1f2937;
+      background: #1e293b;
       border-radius: 18px;
-      padding: 25px;
-      margin-top: 25px;
-      text-align: center;
+      padding: 22px;
+      margin-bottom: 18px;
+      box-shadow: 0 5px 20px rgba(0,0,0,.2);
     }
 
     .symbol {
-      font-size: 20px;
-      color: #d1d5db;
+      text-align: center;
+      color: #cbd5e1;
+      font-size: 18px;
     }
 
     .price {
-      font-size: 42px;
+      text-align: center;
+      font-size: 45px;
       font-weight: bold;
       color: #f5c542;
-      margin: 25px 0;
+      margin: 18px 0;
     }
 
-    .direction {
-      font-size: 28px;
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .box {
+      background: #111827;
+      border-radius: 14px;
+      padding: 18px;
+      text-align: center;
+    }
+
+    .label {
+      color: #94a3b8;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .value {
+      font-size: 22px;
       font-weight: bold;
-      margin: 20px 0;
+    }
+
+    .green {
+      color: #22c55e;
+    }
+
+    .red {
+      color: #ef4444;
+    }
+
+    .yellow {
+      color: #f5c542;
+    }
+
+    .blue {
+      color: #38bdf8;
     }
 
     button {
       width: 100%;
-      padding: 16px;
+      padding: 17px;
       border: none;
-      border-radius: 12px;
+      border-radius: 13px;
       background: #f5c542;
       color: #111827;
-      font-size: 18px;
+      font-size: 19px;
       font-weight: bold;
       cursor: pointer;
+      margin-top: 10px;
     }
 
-    #status {
-      margin-top: 20px;
+    button:disabled {
+      opacity: .6;
+      cursor: wait;
+    }
+
+    .signal {
+      font-size: 32px;
+      font-weight: bold;
+      text-align: center;
+      margin: 15px 0;
+    }
+
+    .strength {
+      text-align: center;
+      color: #cbd5e1;
+      margin-bottom: 10px;
+    }
+
+    .status {
+      text-align: center;
+      color: #94a3b8;
       line-height: 1.8;
-      color: #d1d5db;
+      margin-top: 15px;
+    }
+
+    .warning {
+      background: #3f2f08;
+      border: 1px solid #8a6d1d;
+      color: #fde68a;
+      border-radius: 14px;
+      padding: 15px;
+      line-height: 1.8;
+      text-align: center;
+    }
+
+    .section-title {
+      color: #f5c542;
+      font-size: 21px;
+      margin-bottom: 18px;
+      font-weight: bold;
+    }
+
+    @media (max-width: 600px) {
+      .grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .price {
+        font-size: 36px;
+      }
     }
   </style>
 </head>
@@ -76,120 +170,499 @@
 
   <h1>📈 متداول الذهب بالذكاء الاصطناعي</h1>
 
+  <div class="subtitle">
+    XAU/USD — تحليل الذهب بالبيانات الحقيقية
+  </div>
+
   <div class="card">
 
-    <div class="symbol">XAU/USD — الذهب مقابل الدولار</div>
+    <div class="symbol">سعر الذهب الحالي</div>
 
     <div class="price" id="price">--</div>
 
-    <div class="direction" id="direction">
-      اتجاه السوق: --
-    </div>
-
-    <button onclick="analyzeGold()">
-      🔍 تحليل اتجاه الذهب
+    <button id="analyzeButton" onclick="analyzeGold()">
+      🔍 تحليل الذهب الآن
     </button>
 
-    <div id="status">
-      اضغط على الزر لبدء التحليل.
+    <div class="status" id="status">
+      اضغط على الزر للحصول على التحليل.
     </div>
 
   </div>
 
+
+  <div class="card">
+
+    <div class="section-title">
+      📊 اتجاه السوق
+    </div>
+
+    <div class="grid">
+
+      <div class="box">
+        <div class="label">الاتجاه</div>
+        <div class="value" id="direction">--</div>
+      </div>
+
+      <div class="box">
+        <div class="label">قوة الاتجاه</div>
+        <div class="value" id="strength">--</div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="card">
+
+    <div class="section-title">
+      🎯 الدعم والمقاومة
+    </div>
+
+    <div class="grid">
+
+      <div class="box">
+        <div class="label">المقاومة</div>
+        <div class="value red" id="resistance">--</div>
+      </div>
+
+      <div class="box">
+        <div class="label">الدعم</div>
+        <div class="value green" id="support">--</div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="card">
+
+    <div class="section-title">
+      📉 المؤشرات الفنية
+    </div>
+
+    <div class="grid">
+
+      <div class="box">
+        <div class="label">RSI</div>
+        <div class="value blue" id="rsi">--</div>
+      </div>
+
+      <div class="box">
+        <div class="label">المتوسط 20</div>
+        <div class="value" id="sma20">--</div>
+      </div>
+
+      <div class="box">
+        <div class="label">المتوسط 50</div>
+        <div class="value" id="sma50">--</div>
+      </div>
+
+      <div class="box">
+        <div class="label">آخر إغلاق</div>
+        <div class="value" id="lastClose">--</div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="card">
+
+    <div class="section-title">
+      🎯 إشارة التداول
+    </div>
+
+    <div class="signal yellow" id="signal">
+      انتظار البيانات
+    </div>
+
+    <div class="strength" id="signalReason">
+      لم يتم إجراء التحليل بعد.
+    </div>
+
+  </div>
+
+
+  <div class="warning">
+    ⚠️ هذا التحليل تعليمي وليس ضمانًا للربح.
+    سوق الذهب سريع الحركة، ويجب استخدام وقف خسارة وإدارة رأس المال.
+  </div>
+
 </div>
+
 
 <script>
 
+function average(values) {
+
+  if (!values.length) return 0;
+
+  return values.reduce((a, b) => a + b, 0) / values.length;
+
+}
+
+
+function calculateSMA(closes, period) {
+
+  if (closes.length < period) {
+    return null;
+  }
+
+  return average(closes.slice(-period));
+
+}
+
+
+function calculateRSI(closes, period = 14) {
+
+  if (closes.length < period + 1) {
+    return null;
+  }
+
+  let gains = 0;
+  let losses = 0;
+
+  const start = closes.length - period;
+
+  for (let i = start; i < closes.length; i++) {
+
+    const change = closes[i] - closes[i - 1];
+
+    if (change > 0) {
+      gains += change;
+    } else {
+      losses += Math.abs(change);
+    }
+
+  }
+
+  const averageGain = gains / period;
+  const averageLoss = losses / period;
+
+  if (averageLoss === 0) {
+    return 100;
+  }
+
+  const rs = averageGain / averageLoss;
+
+  return 100 - (100 / (1 + rs));
+
+}
+
+
+function formatPrice(value) {
+
+  if (value === null || value === undefined || isNaN(value)) {
+    return "--";
+  }
+
+  return "$" + Number(value).toFixed(2);
+
+}
+
+
+function setDirection(text, colorClass) {
+
+  const element = document.getElementById("direction");
+
+  element.innerText = text;
+
+  element.className = "value " + colorClass;
+
+}
+
+
 async function analyzeGold() {
 
-  const priceElement = document.getElementById("price");
-  const directionElement = document.getElementById("direction");
-  const statusElement = document.getElementById("status");
+  const button = document.getElementById("analyzeButton");
 
-  priceElement.innerText = "--";
-  directionElement.innerText = "جاري التحليل...";
-  statusElement.innerText = "جاري جلب بيانات الذهب الحقيقية...";
+  const status = document.getElementById("status");
+
+  button.disabled = true;
+
+  button.innerText = "⏳ جاري التحليل...";
+
+  status.innerText = "جاري جلب بيانات الذهب الحقيقية...";
+
 
   try {
 
-    // السعر الحالي
-    const priceResponse =
-      await fetch("https://api.gold-api.com/price/XAU");
+    /*
+      مصدر البيانات:
+      XAUS
+      سعر الذهب + التاريخ اليومي
+    */
 
-    if (!priceResponse.ok) {
-      throw new Error("Price API Error");
+    const spotResponse =
+      await fetch("https://xaus.com/api/v1/spot");
+
+    if (!spotResponse.ok) {
+      throw new Error("تعذر جلب السعر");
     }
 
-    const priceData = await priceResponse.json();
+    const spotData = await spotResponse.json();
 
-    if (!priceData.price) {
-      throw new Error("No current price");
+    const currentPrice =
+      Number(spotData.spot_usd_oz || spotData.xau?.price);
+
+
+    if (!currentPrice) {
+      throw new Error("السعر غير متاح");
     }
 
-    const currentPrice = Number(priceData.price);
 
-    priceElement.innerText =
-      "$" + currentPrice.toFixed(2);
+    /*
+      التاريخ اليومي
+    */
 
-    // البيانات التاريخية
     const historyResponse =
       await fetch("https://xaus.com/api/v1/history");
 
     if (!historyResponse.ok) {
-      throw new Error("History API Error");
+      throw new Error("تعذر جلب التاريخ");
     }
 
     const historyData = await historyResponse.json();
 
-    if (!historyData.points || historyData.points.length < 2) {
-      throw new Error("Not enough history");
+
+    if (!historyData.points || historyData.points.length < 50) {
+      throw new Error("البيانات التاريخية غير كافية");
     }
+
 
     const points = historyData.points;
 
-    const lastPoint = points[points.length - 1];
-    const previousPoint = points[points.length - 2];
 
-    const lastClose = Number(lastPoint.c);
-    const previousClose = Number(previousPoint.c);
+    const closes = points
+      .map(p => Number(p.c))
+      .filter(v => Number.isFinite(v));
 
-    if (lastClose > previousClose) {
 
-      directionElement.innerText =
-        "📈 اتجاه السوق: صاعد";
+    const highs = points
+      .map(p => Number(p.h))
+      .filter(v => Number.isFinite(v));
 
-      directionElement.style.color = "#22c55e";
 
-    } else if (lastClose < previousClose) {
+    const lows = points
+      .map(p => Number(p.l))
+      .filter(v => Number.isFinite(v));
 
-      directionElement.innerText =
-        "📉 اتجاه السوق: هابط";
 
-      directionElement.style.color = "#ef4444";
+    const sma20 = calculateSMA(closes, 20);
 
-    } else {
+    const sma50 = calculateSMA(closes, 50);
 
-      directionElement.innerText =
-        "🟡 اتجاه السوق: محايد";
+    const rsi = calculateRSI(closes, 14);
 
-      directionElement.style.color = "#f5c542";
+
+    /*
+      دعم ومقاومة آخر 20 شمعة
+    */
+
+    const recentHighs = highs.slice(-20);
+
+    const recentLows = lows.slice(-20);
+
+    const resistance = Math.max(...recentHighs);
+
+    const support = Math.min(...recentLows);
+
+
+    /*
+      الاتجاه العام
+    */
+
+    let direction = "محايد";
+
+    let directionClass = "yellow";
+
+    if (sma20 > sma50 && currentPrice > sma20) {
+
+      direction = "📈 صاعد";
+
+      directionClass = "green";
+
+    } else if (sma20 < sma50 && currentPrice < sma20) {
+
+      direction = "📉 هابط";
+
+      directionClass = "red";
+
     }
 
-    statusElement.innerText =
-      "تم التحليل اعتمادًا على بيانات الذهب الحقيقية ✅";
+
+    /*
+      حساب قوة الإشارة
+    */
+
+    let score = 0;
+
+
+    if (sma20 > sma50) {
+      score += 2;
+    } else if (sma20 < sma50) {
+      score -= 2;
+    }
+
+
+    if (currentPrice > sma20) {
+      score += 1;
+    } else {
+      score -= 1;
+    }
+
+
+    if (rsi !== null) {
+
+      if (rsi > 50 && rsi < 70) {
+        score += 1;
+      }
+
+      if (rsi < 50 && rsi > 30) {
+        score -= 1;
+      }
+
+    }
+
+
+    /*
+      الإشارة النهائية
+    */
+
+    let signal = "⏳ انتظار";
+
+    let signalClass = "yellow";
+
+    let reason = "الإشارات غير متوافقة بشكل كافٍ.";
+
+
+    if (score >= 3) {
+
+      signal = "🟢 شراء";
+
+      signalClass = "green";
+
+      reason =
+        "الاتجاه والمتوسطات تدعم الحركة الصاعدة.";
+
+    } else if (score <= -3) {
+
+      signal = "🔴 بيع";
+
+      signalClass = "red";
+
+      reason =
+        "الاتجاه والمتوسطات تدعم الحركة الهابطة.";
+
+    }
+
+
+    /*
+      قوة الاتجاه
+    */
+
+    let strength = "ضعيف";
+
+    if (Math.abs(score) >= 4) {
+      strength = "قوي";
+    } else if (Math.abs(score) >= 3) {
+      strength = "متوسط";
+    }
+
+
+    /*
+      عرض النتائج
+    */
+
+    document.getElementById("price").innerText =
+      formatPrice(currentPrice);
+
+
+    setDirection(direction, directionClass);
+
+
+    document.getElementById("strength").innerText =
+      strength;
+
+
+    document.getElementById("support").innerText =
+      formatPrice(support);
+
+
+    document.getElementById("resistance").innerText =
+      formatPrice(resistance);
+
+
+    document.getElementById("rsi").innerText =
+      rsi === null ? "--" : rsi.toFixed(1);
+
+
+    document.getElementById("sma20").innerText =
+      formatPrice(sma20);
+
+
+    document.getElementById("sma50").innerText =
+      formatPrice(sma50);
+
+
+    document.getElementById("lastClose").innerText =
+      formatPrice(closes[closes.length - 1]);
+
+
+    const signalElement =
+      document.getElementById("signal");
+
+    signalElement.innerText = signal;
+
+    signalElement.className =
+      "signal " + signalClass;
+
+
+    document.getElementById("signalReason").innerText =
+      reason;
+
+
+    const updated =
+      spotData.updated_at ||
+      spotData.price_as_of ||
+      new Date().toISOString();
+
+
+    status.innerText =
+      "تم التحليل بنجاح من بيانات حقيقية ✅";
+
 
   } catch (error) {
 
-    priceElement.innerText = "--";
+    document.getElementById("price").innerText =
+      "--";
 
-    directionElement.innerText =
-      "اتجاه السوق: غير متاح";
+    document.getElementById("direction").innerText =
+      "غير متاح";
 
-    directionElement.style.color = "#f5c542";
+    document.getElementById("strength").innerText =
+      "--";
 
-    statusElement.innerText =
-      "تعذر جلب البيانات حاليًا. لم يتم اختلاق أي سعر أو اتجاه ❌";
+    document.getElementById("signal").innerText =
+      "⚠️ لا توجد إشارة";
+
+    document.getElementById("signalReason").innerText =
+      "تعذر الحصول على بيانات كافية للتحليل.";
+
+    status.innerText =
+      "حدث خطأ أثناء جلب البيانات. لم يتم اختلاق أي سعر أو إشارة.";
+
   }
+
+
+  button.disabled = false;
+
+  button.innerText =
+    "🔍 تحليل الذهب الآن";
 
 }
 
